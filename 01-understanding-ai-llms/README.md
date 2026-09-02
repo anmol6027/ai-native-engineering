@@ -15,7 +15,7 @@ Same support ticket, two approaches:
 - **Few-shot** — same prompt plus four worked examples
 
 Then ran the zero-shot version five times to check whether
-the answer held. Raised temperature to 1.8 to try and break it.
+the answer held. Raised temperature to 1.5 to try and break it.
 
 The ticket was deliberately ambiguous — app crash, double
 charge, and a refund request in one message.
@@ -26,12 +26,12 @@ charge, and a refund request in one message.
 |---|---|---|
 | Input tokens | 211 | 300 |
 | Output tokens | 46 | 44 |
-| Consistency | 5/5 | 5/5 |
+| Consistency | 5/5 @ temp 1.5 | not tested |
 | Cost @ 10k/day | ₹4,246/mo | ₹5,590/mo |
 
-Both stable. Even at high temperature. The four examples
-added 89 tokens per request — **₹16,000 a year** — and
-changed nothing.
+Zero-shot held across all five runs. The four examples added
+89 tokens per request — **₹16,000 a year at this volume** —
+and returned the same label on the single run tested.
 
 ## What I'd ship
 
