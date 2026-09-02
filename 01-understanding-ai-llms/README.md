@@ -35,8 +35,13 @@ and returned the same label on the single run tested.
 
 ## What I'd ship
 
-Zero-shot. Not because it's cheaper, but because I measured
-it and the alternative added cost without adding reliability.
+Zero-shot. Not because it's cheaper — because it held across
+five runs at temperature 1.5, and the alternative added 32%
+cost with no evidence it buys anything. Whether few-shot
+improves reliability is untested; zero-shot's own stability
+made the question moot at this volume.
+
+## Why I think this held
 
 The wider point: classification is a constrained task. The
 model picks from five options rather than generating freely,
