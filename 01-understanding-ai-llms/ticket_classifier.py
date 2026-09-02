@@ -153,7 +153,8 @@ print("tokens were the model reasoning internally. You paid for those.")
 #
 # THE HIDDEN COST: these examples get sent with EVERY SINGLE
 # REQUEST. Forever. 10,000 tickets a day = 10,000 copies of
-# these examples, every day.
+# these examples, every day. Whether they earn that cost is
+# the thing this build measures.
 
 EXAMPLES = """
 Ticket: "My parcel says delivered but I never received it."
@@ -260,10 +261,11 @@ print()
 
 if len(unique_answers) > 1:
     print(">>> Same ticket. Same model. Different answers.")
-    print(">>> This is what breaks in production.")
+    print(">>> Inconsistency at this temperature is a red flag.")
 else:
-    print(">>> Consistent this run. Run the cell again —")
-    print(">>> or raise temperature to 1.0 to expose the drift.")
+    print(">>> Stable across all runs, even at high temperature.")
+    print(">>> Classification constrains the model to a fixed set")
+    print(">>> of options, so randomness has less room to shift it.")
 # =============================================================
 # CELL 7 — WHAT IT ACTUALLY COSTS
 # =============================================================
