@@ -6,10 +6,14 @@
 # A company gets 10,000 support emails a day. Can AI route them
 # to the right team automatically? And what does it cost?
 #
-# WHAT WE PROVE:
-#   1. The cheap approach gives DIFFERENT answers to the SAME email
-#   2. The reliable approach costs measurably more
-#   3. You can calculate the exact rupee difference
+# WHAT THIS TESTS:
+#   1. Does the same input produce the same answer every time?
+#   2. Do prompt examples change the outcome?
+#   3. What does each approach cost at production volume?
+#
+# WHAT I FOUND: zero-shot was 5/5 consistent at temperature 1.5.
+# Few-shot returned the same label. The examples added 32% cost
+# and did not change the answer.
 #
 # HOW TO USE THIS FILE:
 # Each block marked "CELL N" goes into its own Colab cell.
@@ -225,10 +229,9 @@ print("Per request. Every request. Forever.")
 # Those are different things — and consistency is what kills
 # systems in production.
 #
-# WHY TEMPERATURE 0.8:
-# We deliberately raise the randomness to EXPOSE the instability.
-# At 0.2 it may look stable. Real production traffic is messier
-# than one test, so we stress it on purpose.
+# WHY HIGH TEMPERATURE:
+# We raise randomness deliberately to try and break consistency.
+# If the answer holds at 1.5, the task is genuinely stable.
 #
 # THE BUSINESS TRANSLATION:
 # If this ticket routes to refunds on Monday and tech on Tuesday,
@@ -264,9 +267,9 @@ else:
 # =============================================================
 # CELL 7 — WHAT IT ACTUALLY COSTS
 # =============================================================
-# Few-shot is more reliable. But reliability has a price.
-# This cell turns "more tokens" into a rupee figure a CTO
-# can actually make a decision on.
+# Few-shot costs more. This cell turns "more tokens" into a
+# rupee figure so you can decide whether the extra spend
+# bought you anything.
 
 # Pricing per MILLION tokens, in US dollars.
 # Output costs more than input because input is processed all at
@@ -320,5 +323,5 @@ print(f"Few-shot  : Rs {few_month_inr:>10,.0f}")
 print(f"Difference: Rs {(few_month_inr - zero_month_inr):>10,.0f}")
 print()
 print("THE DECISION:")
-print("Cheap option is unreliable. Reliable option costs more.")
-print("Now you have the number to decide with.")
+print("Both approaches returned the same label.")
+print("The examples cost 32% more and changed nothing.")
