@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 04 — React & Next.js: Where Does Your API Key Actually Go?
 
-## Getting Started
+## The question
+In a Next.js app, which secrets can the browser see — and what decides it?
 
-First, run the development server:
+## Setup
+- Next.js 16.3.4 (App Router, Turbopack), dev mode
+- `app/page.tsx` — server component, fetches 5 posts on the server
+- `app/client-version/page.tsx` — client component (`"use client"`), fetches the same posts in the browser
+- `.env.local` with two fake keys (see `.env.example`):
+  - `MY_SECRET=sk-fake-kitchen-111`
+  - `NEXT_PUBLIC_MY_SECRET=sk-fake-table-222`
+- Each page logs the env vars with `console.log`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Measured results
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Where the code ran | Variable | Value seen |
+|---|---|---|
+| Server component (terminal) | `MY_SECRET` | `sk-fake-kitchen-111` |
+| Client component (browser console) | `MY_SECRET` | `undefined` |
+| Client component (browser console) | `NEXT_PUBLIC_MY_SECRET` | `sk-fake-table-222` |
+| Client component (terminal, server pre-render) | both | real values for both |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Interpretation
+- Next.js blocks normal env vars from reaching the browser by default.
+- The `NEXT_PUBLIC_` prefix is an explicit instruction to ship the value to every visitor. One prefix = public key.
+- `"use client"` does not mean "browser only". Client components also run once on the server to pre-render, where they can read every env var. What the browser receives is what matters.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Side findings
+- `"use client"` must be the first line of the file. Placing a `console.log` above it produced 3 compile errors, including `useState`/`useEffect` being rejected as server-only violations.
+- Opening the dev server via the network IP (`192.168.1.33:3000`) instead of `localhost` caused Next.js to block dev resources. The client page stayed stuck on "Loading..." because its JavaScript never hydrated. The server page rendered fine — it doesn't depend on browser JS.
+- Browser logs appeared more than once per load (likely React Strict Mode double-invoking in dev, plus re-renders on state change). Not a bug.
 
-## Learn More
+## Limitations
+- Tested in dev mode only; not yet verified against `npm run build && npm start`.
+- Did not test passing a server secret to a client component as a prop — a known leak path not covered here.
 
-To learn more about Next.js, take a look at the following resources:
+## Run it
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    cp .env.example .env.local
+    npm install
+    npm run dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open `http://localhost:3000` (check terminal) and `http://localhost:3000/client-version` (check browser console).
