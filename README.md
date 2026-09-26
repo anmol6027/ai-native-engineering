@@ -4,6 +4,9 @@ Production-focused AI experiments. Each build tests a real constraint — cost, 
 
 Not tutorials. Findings.
 
+https://www.linkedin.com/in/anmolsrivastav/
+
+
 ## Builds
 
 - [01 — Ticket Classifier: Cost vs Consistency](./01-understanding-ai-llms)
